@@ -2,6 +2,7 @@ use crate::types::{Context, Error};
 use poise::serenity_prelude::{GetMessages, User};
 
 #[poise::command(
+    prefix_command,
     slash_command,
     aliases("clear"),
     owners_only,

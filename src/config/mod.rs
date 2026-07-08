@@ -1,24 +1,56 @@
+use std::collections::HashSet;
+use std::hash::Hash;
+use std::mem::discriminant;
+
 #[derive(knus::Decode, Debug)]
-pub struct BotConfig {
+pub struct ServerConfig {
     #[knus(child, unwrap(argument), default = "!".to_string())]
     pub prefix: String,
-    #[knus(child, unwrap(children))]
-    pub levels: Vec<PermissionLevel>,
-    #[knus(child, unwrap(children))]
-    pub plugins: Vec<Plugins>,
+    #[knus(child, unwrap(children), default = HashSet::new())]
+    pub levels: HashSet<PermissionLevel>,
+    #[knus(child, unwrap(children), default = HashSet::new())]
+    pub plugins: HashSet<Plugins>,
 }
 
 #[derive(knus::Decode, Debug)]
-struct PermissionLevel {
+pub struct PermissionLevel {
     #[knus(node_name)]
     pub role_id: String,
     #[knus(argument)]
     pub value: i64,
 }
 
+impl PartialEq for PermissionLevel {
+    fn eq(&self, other: &Self) -> bool {
+        self.role_id == other.role_id
+    }
+}
+
+impl Eq for PermissionLevel {}
+
+impl Hash for PermissionLevel {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.role_id.hash(state);
+    }
+}
+
 #[derive(knus::Decode, Debug)]
-enum Plugins {
+pub enum Plugins {
     ModActions(Plugin<ModActionsConfig>),
+}
+
+impl PartialEq for Plugins {
+    fn eq(&self, other: &Self) -> bool {
+        discriminant(self) == discriminant(other)
+    }
+}
+
+impl Eq for Plugins {}
+
+impl Hash for Plugins {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        discriminant(self).hash(state);
+    }
 }
 
 #[derive(knus::Decode, Debug)]
@@ -47,7 +79,7 @@ struct ModActionsConfig {
 
 #[cfg(test)]
 mod tests {
-    use crate::config::BotConfig;
+    use crate::config::ServerConfig;
 
     #[test]
     fn test_config_decode() {
@@ -82,7 +114,7 @@ mod tests {
                 }
             }"#;
 
-        let parsed_config: BotConfig = knus::parse("<test>", config_str)
+        let parsed_config: ServerConfig = knus::parse("<test>", config_str)
             .map_err(miette::Report::new)
             .unwrap();
 

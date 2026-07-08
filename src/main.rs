@@ -3,12 +3,11 @@ use poise::serenity_prelude as serenity;
 use crate::app::App;
 use crate::types::Error;
 use serenity::{ClientBuilder, GatewayIntents};
-use std::{env, fs};
+use std::env;
 use tracing::level_filters::LevelFilter;
-use tracing::{debug, error, info};
+use tracing::{debug, debug_span, error, info};
 use tracing_subscriber::EnvFilter;
 use uuid::Uuid;
-use crate::config::BotConfig;
 
 mod app;
 mod commands;
@@ -27,16 +26,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .from_env_lossy();
     tracing_subscriber::fmt().with_env_filter(env_filter).init();
 
-    // Load config
-    let config: BotConfig = knus::parse("<config>", &fs::read_to_string("./test_config.kdl")?)
-        .map_err(miette::Report::new)?;
-
     // Setup serenity/poise
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: commands::routes(),
             prefix_options: poise::PrefixFrameworkOptions {
-                prefix: Some(config.prefix),
+                dynamic_prefix: Some(|ctx| Box::pin(async move {
+                    Ok(match ctx.guild_id {
+                        Some(id) => {
+                            let span = debug_span!("dynamic_prefix", guild_id = id.to_string());
+                            let _enter = span.enter();
+                            let config = ctx.data.get_config(id);
+                            let prefix = config.prefix.clone();
+                            debug!("Prefix: {:?}", prefix);
+                            Some(prefix)
+                        }
+                        None => None
+                    })
+                })),
                 ..Default::default()
             },
             on_error: |ctx| Box::pin(on_error(ctx)),
