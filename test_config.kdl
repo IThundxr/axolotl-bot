@@ -1,0 +1,29 @@
+prefix "!"
+
+levels {
+    "172949857164722176" 100 // Example admin
+    "172950000412655616" 50  // Example mod
+}
+
+plugins {
+    mod-actions {
+        config {
+            kick-message "You have been kicked"
+            can-kick #true
+        }
+
+        overrides {
+            override ">=50" {
+                config {
+                    can-kick #true
+                }
+            }
+
+            override ">=100" {
+                config {
+                    kick-message "You have been kicked by an admin"
+                }
+            }
+        }
+    }
+}

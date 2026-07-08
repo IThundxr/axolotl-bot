@@ -1,0 +1,16 @@
+[package]
+name = "axolotl"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+dotenvy = "0.15.7"
+humantime = "2.4.0"
+knus = { git = "https://github.com/IThundxr/knus.git", branch = "feat/generics-decode" }
+miette = { version = "7.6.0", features = ["fancy"] }
+poise = "0.6.2"
+snafu = "0.9.1"
+tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+uuid = { version = "1.23.3", features = ["v4"] }
