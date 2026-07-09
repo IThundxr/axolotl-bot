@@ -1,9 +1,12 @@
-[package]
-name = "axolotl"
-version = "0.1.0"
+[workspace]
+resolver = "3"
+members = ["crates/bot"]
+
+[workspace.package]
+version = "1.0.0"
 edition = "2024"
 
-[dependencies]
+[workspace.dependencies]
 dotenvy = "0.15.7"
 humantime = "2.4.0"
 knus = { git = "https://github.com/IThundxr/knus.git", branch = "feat/generics-decode" }

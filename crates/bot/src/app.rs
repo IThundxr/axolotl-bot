@@ -21,7 +21,7 @@ impl App {
         }
 
         let config = Arc::new(
-            knus::parse("<config>", &fs::read_to_string(format!("./configs/{id}.kdl")).unwrap())
+            knus::parse("<config>", &fs::read_to_string(format!("../configs/{id}.kdl")).unwrap())
                 .map_err(miette::Report::new)
                 .unwrap(),
         );

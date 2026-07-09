@@ -1,0 +1,17 @@
+[package]
+name = "axolotl-bot"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+dotenvy.workspace = true
+humantime.workspace = true
+knus.workspace = true
+miette.workspace = true
+poise.workspace = true
+sea-orm.workspace = true
+snafu.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+uuid.workspace = true
