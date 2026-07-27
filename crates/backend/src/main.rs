@@ -15,15 +15,17 @@ use axum_login::tower_sessions::{Expiry, SessionManagerLayer};
 use tower_http::trace::TraceLayer;
 use tower_sessions_redis_store::{RedisStore, fred::prelude::*};
 use tracing::{debug, info};
+use tracing::level_filters::LevelFilter;
 use tracing_subscriber::EnvFilter;
-use tracing_subscriber::filter::LevelFilter;
+use migration::{Migrator, MigratorTrait};
 use crate::app::App;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    dotenvy::dotenv().ok();
+async fn main() -> anyhow::Result<()> {
+    // Load .env
+    dotenvy::dotenv()?;
 
-    debug!("Configuring tracing subscriber from env");
+    // Setup tracing
     let env_filter = EnvFilter::builder()
         .with_default_directive(LevelFilter::INFO.into())
         .from_env_lossy();
@@ -31,7 +33,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let app = App::new().await?;
 
-    let redis_url = Config::from_url(&env::var("REDIS_URL")?)?;
+    debug!("Running migrations");
+    Migrator::up(&app.db, None).await?;
+    debug!("Finished running migrations");
+
+    let redis_url = Config::from_url(&env::var("BACKEND_REDIS_URL")?)?;
     let redis_pool = Pool::new(redis_url, None, None, None, 6)?;
 
     debug!("Trying to connect to redis");

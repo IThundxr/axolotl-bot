@@ -1,5 +1,4 @@
-use snafu::Snafu;
+use thiserror::Error;
 
-#[derive(Snafu, Debug)]
-#[snafu(visibility(pub))]
+#[derive(Error, Debug)]
 pub enum BotError {}

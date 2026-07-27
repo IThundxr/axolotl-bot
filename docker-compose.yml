@@ -1,0 +1,24 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:18
+    restart: no
+    user: 1000:1000
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql/18/docker
+
+  redis:
+    container_name: redis
+    image: redis
+    restart: no
+    ports:
+      - "6379:6379"
+    command: ["--databases", "1"]
+    volumes:
+      - ./redis:/data

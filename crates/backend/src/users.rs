@@ -2,7 +2,7 @@ use axum_login::{AuthUser, AuthnBackend, UserId};
 use crate::app::App;
 
 #[derive(Debug, Clone)]
-struct User {
+pub struct User {
     id: i64,
     pw_hash: Vec<u8>,
 }
@@ -20,7 +20,7 @@ impl AuthUser for User {
 }
 
 #[derive(Clone)]
-struct Credentials {
+pub struct Credentials {
     user_id: i64,
 }
 
@@ -33,13 +33,15 @@ impl AuthnBackend for App {
         &self,
         Credentials { user_id }: Self::Credentials,
     ) -> Result<Option<Self::User>, Self::Error> {
-        Ok(self.users.get(&user_id).cloned())
+        Ok(None)
+        //Ok(self.users.get(&user_id).cloned())
     }
 
     async fn get_user(
         &self,
         user_id: &UserId<Self>,
     ) -> Result<Option<Self::User>, Self::Error> {
-        Ok(self.users.get(user_id).cloned())
+        Ok(None)
+        //Ok(self.users.get(user_id).cloned())
     }
 }

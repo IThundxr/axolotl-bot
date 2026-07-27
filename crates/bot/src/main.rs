@@ -4,11 +4,10 @@ use crate::app::App;
 use crate::types::Error;
 use serenity::{ClientBuilder, GatewayIntents};
 use std::env;
-use tracing::level_filters::LevelFilter;
 use tracing::{debug, debug_span, error, info};
+use tracing::level_filters::LevelFilter;
 use tracing_subscriber::EnvFilter;
 use uuid::Uuid;
-use crate::commands::BotCommand;
 
 mod app;
 mod commands;
@@ -17,7 +16,7 @@ mod error;
 mod types;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> anyhow::Result<()> {
     // Load .env
     dotenvy::dotenv()?;
 
@@ -76,7 +75,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .build();
 
-    let token = env::var("DISCORD_TOKEN")?;
+    let token = env::var("BOT_DISCORD_TOKEN")?;
     let intents = GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT;
     let client = ClientBuilder::new(token, intents)
         .framework(framework)

@@ -1,24 +1,25 @@
 use std::env;
+use std::ffi::OsStr;
 use axum::http::StatusCode;
 use axum::Json;
 use axum::response::IntoResponse;
 use oauth2::url;
-use snafu::Snafu;
 use uuid::Uuid;
 use serde::Serialize;
+use thiserror::Error;
 use tracing::error;
 
-#[derive(Snafu, Debug)]
-#[snafu(visibility(pub(crate)))]
+#[derive(Debug, Error)]
 pub enum Error {
     // Non route errors
-    #[snafu(display("Could not read environment variable: {source}"))]
-    MissingEnvVar { source: env::VarError },
-    #[snafu(display("Failed to parse url: {source}"))]
-    FailedToParseUrl { source: url::ParseError },
-    
-    // Route errors
+    #[error("Missing environment variable")]
+    MissingEnvVar(#[from] std::env::VarError),
+    #[error("Failed to parse url")]
+    UrlParse(#[from] url::ParseError),
+    #[error("Database error")]
+    Database(#[from] sea_orm::DbErr),
 
+    // Route errors
 }
 
 #[derive(Serialize)]
