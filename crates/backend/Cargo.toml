@@ -1,0 +1,25 @@
+[package]
+name = "backend"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+axum.workspace = true
+axum-extra.workspace = true
+axum-login.workspace = true
+dotenvy.workspace = true
+headers.workspace = true
+oauth2.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+snafu.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tower-sessions.workspace = true
+tower-sessions-core.workspace = true
+tower-sessions-redis-store.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+uuid.workspace = true
