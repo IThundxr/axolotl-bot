@@ -1,20 +1,37 @@
 [workspace]
 resolver = "3"
-members = ["crates/bot"]
+members = ["crates/backend", "crates/bot", "crates/macros"]
 
 [workspace.package]
-version = "1.0.0"
+version = "0.1.0"
+authors = ["IThundxr"]
 edition = "2024"
+publish = false
 
 [workspace.dependencies]
+axum = "0.8.8"
+axum-extra = { version = "0.12.5", features = ["typed-header"] }
+axum-login = "0.18.0"
 dotenvy = "0.15.7"
+headers = "0.4"
 humantime = "2.4.0"
-knus = { git = "https://github.com/IThundxr/knus.git", branch = "feat/generics-decode" }
+inventory = "0.3.24"
+knus = { git = "https://github.com/TheLostLambda/knus.git", branch = "kdl2" }
+leptos = { version = "0.8.20", features = ["csr"] }
+macros = { path = "crates/macros" }
 miette = { version = "7.6.0", features = ["fancy"] }
+oauth2 = "5.0.0"
 poise = "0.6.2"
+reqwest = { version = "0.12.22", features = ["json"] }
 sea-orm = { version = "2.0.0-rc.37", features = ["sqlx-postgres", "runtime-tokio-native-tls", "macros"] }
+serde = { version = "1.0.228", features = ["derive"] }
 snafu = "0.9.1"
 tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread"] }
+tower = "0.5.2"
+tower-http = { version = "0.6.8", features = ["trace"] }
+tower-sessions = "0.14.0"
+tower-sessions-core = "0.14.0"
+tower-sessions-redis-store = "0.16.0"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
-uuid = { version = "1.23.3", features = ["v4"] }
+uuid = { version = "1.23.3", features = ["v4", "serde"] }

@@ -1,12 +1,16 @@
 [package]
-name = "axolotl-bot"
+name = "bot"
 version.workspace = true
+authors.workspace = true
 edition.workspace = true
+publish.workspace = true
 
 [dependencies]
 dotenvy.workspace = true
 humantime.workspace = true
+inventory.workspace = true
 knus.workspace = true
+macros.workspace = true
 miette.workspace = true
 poise.workspace = true
 sea-orm.workspace = true

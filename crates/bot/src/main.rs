@@ -8,6 +8,7 @@ use tracing::level_filters::LevelFilter;
 use tracing::{debug, debug_span, error, info};
 use tracing_subscriber::EnvFilter;
 use uuid::Uuid;
+use crate::commands::BotCommand;
 
 mod app;
 mod commands;

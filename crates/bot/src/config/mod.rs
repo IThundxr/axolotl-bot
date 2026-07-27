@@ -54,7 +54,7 @@ impl Hash for Plugins {
 }
 
 #[derive(knus::Decode, Debug)]
-struct Plugin<T> {
+struct Plugin<T: knus::Decode> {
     #[knus(child)]
     pub config: T,
     #[knus(child, unwrap(children(name = "override")))]
@@ -62,7 +62,7 @@ struct Plugin<T> {
 }
 
 #[derive(knus::Decode, Debug)]
-struct PluginOverride<T> {
+struct PluginOverride<T: knus::Decode> {
     #[knus(argument)]
     pub level: String,
     #[knus(child)]

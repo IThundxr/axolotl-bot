@@ -1,6 +1,9 @@
+use crate::commands::{BotCommand};
 use crate::types::{Context, Error};
-use poise::serenity_prelude::{GetMessages, User};
+use poise::serenity_prelude::User;
+use macros::register;
 
+#[register(BotCommand)]
 #[poise::command(
     prefix_command,
     slash_command,

@@ -1,5 +1,8 @@
+use macros::register;
+use crate::commands::BotCommand;
 use crate::types::{Context, Error};
 
+#[register(BotCommand)]
 #[poise::command(slash_command)]
 pub async fn help(
     ctx: Context<'_>,

@@ -1,1 +1,1 @@
-pub mod clean;
+mod clean;

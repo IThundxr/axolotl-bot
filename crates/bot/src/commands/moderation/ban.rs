@@ -1,13 +1,16 @@
 use poise::serenity_prelude::User;
+use macros::register;
+use crate::commands::BotCommand;
 use crate::types::{Context, Error};
 
+#[register(BotCommand)]
 #[poise::command(
+    prefix_command,
     slash_command,
-    aliases("ban"),
     owners_only,
     category = "Moderation"
 )]
-pub async fn clean(
+pub async fn ban(
     ctx: Context<'_>,
     #[description = "The user to ban"]
     user: User,
