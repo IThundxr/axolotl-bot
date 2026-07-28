@@ -1,17 +1,20 @@
+use crate::config::ServerConfig;
+use poise::serenity_prelude::GuildId;
+use sea_orm::DatabaseConnection;
 use std::collections::HashMap;
 use std::fs;
 use std::sync::{Arc, RwLock};
-use poise::serenity_prelude::GuildId;
-use crate::config::ServerConfig;
 
 pub struct App {
-    server_configs: RwLock<HashMap<GuildId, Arc<ServerConfig>>>
+    db: DatabaseConnection,
+    server_configs: RwLock<HashMap<GuildId, Arc<ServerConfig>>>,
 }
 
 impl App {
-    pub fn new() -> Self {
+    pub fn new(db: DatabaseConnection) -> Self {
         App {
-            server_configs: RwLock::new(HashMap::new())
+            db,
+            server_configs: RwLock::new(HashMap::new()),
         }
     }
 
@@ -21,9 +24,12 @@ impl App {
         }
 
         let config = Arc::new(
-            knus::parse("<config>", &fs::read_to_string(format!("./configs/{id}.kdl")).unwrap())
-                .map_err(miette::Report::new)
-                .unwrap(),
+            knus::parse(
+                "<config>",
+                &fs::read_to_string(format!("./configs/{id}.kdl")).unwrap(),
+            )
+            .map_err(miette::Report::new)
+            .unwrap(),
         );
 
         self.server_configs

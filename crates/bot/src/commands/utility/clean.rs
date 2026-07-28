@@ -1,7 +1,7 @@
-use crate::commands::{BotCommand};
+use crate::commands::BotCommand;
 use crate::types::{Context, Error};
-use poise::serenity_prelude::User;
 use macros::register;
+use poise::serenity_prelude::User;
 
 #[register(BotCommand)]
 #[poise::command(
@@ -17,7 +17,7 @@ pub async fn clean(
     #[min = 2]
     #[max = 300]
     count: i32,
-    user: Option<User>
+    user: Option<User>,
 ) -> Result<(), Error> {
     // GetMessages::new()
     //     .before();

@@ -1,5 +1,5 @@
 [package]
-name = "backend-migration"
+name = "database-migration"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true

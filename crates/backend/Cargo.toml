@@ -6,16 +6,19 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
-backend-migration.workspace = true
-sea-orm.workspace = true
+anyhow.workspace = true
 axum.workspace = true
 axum-extra.workspace = true
 axum-login.workspace = true
+constant_time_eq.workspace = true
+database-entity.workspace = true
 dotenvy.workspace = true
 headers.workspace = true
 oauth2.workspace = true
 reqwest.workspace = true
+sea-orm.workspace = true
 serde.workspace = true
+thiserror.workspace = true
 tokio.workspace = true
 tower-http.workspace = true
 tower-sessions.workspace = true
@@ -24,5 +27,3 @@ tower-sessions-redis-store.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 uuid.workspace = true
-thiserror.workspace = true
-anyhow.workspace = true

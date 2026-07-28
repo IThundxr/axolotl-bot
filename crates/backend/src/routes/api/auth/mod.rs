@@ -1,5 +1,5 @@
-use axum::Router;
 use crate::app::App;
+use axum::Router;
 
 pub mod discord;
 

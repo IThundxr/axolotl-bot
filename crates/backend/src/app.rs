@@ -1,11 +1,16 @@
-use std::env;
-use std::time::Duration;
-use oauth2::basic::{BasicClient, BasicErrorResponse, BasicRevocationErrorResponse, BasicTokenIntrospectionResponse, BasicTokenResponse};
-use oauth2::{AuthUrl, ClientId, ClientSecret, EndpointNotSet, EndpointSet, RedirectUrl, RevocationUrl, StandardRevocableToken, TokenUrl};
+use crate::error::Error;
+use oauth2::basic::{
+    BasicClient, BasicErrorResponse, BasicRevocationErrorResponse, BasicTokenIntrospectionResponse,
+    BasicTokenResponse,
+};
+use oauth2::{
+    AuthUrl, ClientId, ClientSecret, EndpointNotSet, EndpointSet, RedirectUrl, RevocationUrl,
+    StandardRevocableToken, TokenUrl,
+};
 use reqwest::Client;
 use reqwest::redirect::Policy;
-use sea_orm::{ConnectOptions, Database, DatabaseConnection};
-use crate::error::Error;
+use sea_orm::DatabaseConnection;
+use std::env;
 
 pub type OAuthClient = oauth2::Client<
     BasicErrorResponse,
@@ -33,29 +38,14 @@ pub struct App {
 }
 
 impl App {
-    pub async fn new() -> Result<Self, Error> {
+    pub async fn new(db: DatabaseConnection) -> Result<Self, Error> {
         let app = Self {
             http: Client::new(),
             oauth_http: Client::builder().redirect(Policy::none()).build().unwrap(),
-            db: {
-                let database_url = env::var("BACKEND_DATABASE_URL")?;
-
-                let mut opt = ConnectOptions::new(database_url);
-                let duration = Duration::from_secs(8);
-                opt.max_connections(100)
-                    .min_connections(5)
-                    .connect_timeout(duration)
-                    .acquire_timeout(duration)
-                    .idle_timeout(duration)
-                    .max_lifetime(duration)
-                    .sqlx_logging(true);
-
-                Database::connect(opt).await?
-            },
+            db,
             discord_oauth: {
                 let client_id = env::var("BACKEND_DISCORD_CLIENT_ID")?;
-                let client_secret =
-                    env::var("BACKEND_DISCORD_CLIENT_SECRET")?;
+                let client_secret = env::var("BACKEND_DISCORD_CLIENT_SECRET")?;
                 let auth_url = AuthUrl::new("https://discord.com/oauth2/authorize".into())?;
                 let token_url = TokenUrl::new("https://discord.com/api/oauth2/token".into())?;
                 let revocation_url =

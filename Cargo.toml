@@ -1,9 +1,12 @@
 [workspace]
 resolver = "3"
 members = [
+    "crates/app",
     "crates/backend",
-    "crates/backend/migration",
     "crates/bot",
+    "crates/database",
+    "crates/database/entity",
+    "crates/database/migration",
     "crates/macros",
 ]
 
@@ -18,7 +21,12 @@ anyhow = "1.0.104"
 axum = "0.8.8"
 axum-extra = { version = "0.12.5", features = ["typed-header"] }
 axum-login = "0.18.0"
-backend-migration = { path = "crates/backend/migration" }
+backend = { path = "crates/backend" }
+bot = { path = "crates/bot" }
+constant_time_eq = "0.5.0"
+database = { path = "crates/database" }
+database-entity = { path = "crates/database/entity" }
+database-migration = { path = "crates/database/migration" }
 dotenvy = "0.15.7"
 headers = "0.4"
 humantime = "2.4.0"

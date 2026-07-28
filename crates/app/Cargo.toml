@@ -1,0 +1,17 @@
+[package]
+name = "app"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+backend.workspace = true
+bot.workspace = true
+database.workspace = true
+database-migration.workspace = true
+dotenvy.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

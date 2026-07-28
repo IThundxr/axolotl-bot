@@ -2,11 +2,10 @@ use poise::serenity_prelude as serenity;
 
 use crate::app::App;
 use crate::types::Error;
+use sea_orm::DatabaseConnection;
 use serenity::{ClientBuilder, GatewayIntents};
 use std::env;
 use tracing::{debug, debug_span, error, info};
-use tracing::level_filters::LevelFilter;
-use tracing_subscriber::EnvFilter;
 use uuid::Uuid;
 
 mod app;
@@ -15,35 +14,29 @@ mod config;
 mod error;
 mod types;
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    // Load .env
-    dotenvy::dotenv()?;
-
-    // Setup tracing
-    let env_filter = EnvFilter::builder()
-        .with_default_directive(LevelFilter::INFO.into())
-        .from_env_lossy();
-    tracing_subscriber::fmt().with_env_filter(env_filter).init();
+pub async fn run(db: DatabaseConnection) -> anyhow::Result<()> {
+    let app = App::new(db);
 
     // Setup serenity/poise
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: commands::routes(),
             prefix_options: poise::PrefixFrameworkOptions {
-                dynamic_prefix: Some(|ctx| Box::pin(async move {
-                    Ok(match ctx.guild_id {
-                        Some(id) => {
-                            let span = debug_span!("dynamic_prefix", guild_id = id.to_string());
-                            let _enter = span.enter();
-                            let config = ctx.data.get_config(id);
-                            let prefix = config.prefix.clone();
-                            debug!("Prefix: {:?}", prefix);
-                            Some(prefix)
-                        }
-                        None => None
+                dynamic_prefix: Some(|ctx| {
+                    Box::pin(async move {
+                        Ok(match ctx.guild_id {
+                            Some(id) => {
+                                let span = debug_span!("dynamic_prefix", guild_id = id.to_string());
+                                let _enter = span.enter();
+                                let config = ctx.data.get_config(id);
+                                let prefix = config.prefix.clone();
+                                debug!("Prefix: {:?}", prefix);
+                                Some(prefix)
+                            },
+                            None => None,
+                        })
                     })
-                })),
+                }),
                 ..Default::default()
             },
             on_error: |ctx| Box::pin(on_error(ctx)),
@@ -70,7 +63,7 @@ async fn main() -> anyhow::Result<()> {
                 info!("Registering slash commands globally");
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
                 info!("Registered slash commands globally");
-                Ok(App::new())
+                Ok(app)
             })
         })
         .build();

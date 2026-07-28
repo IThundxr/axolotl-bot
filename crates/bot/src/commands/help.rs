@@ -1,6 +1,6 @@
-use macros::register;
 use crate::commands::BotCommand;
 use crate::types::{Context, Error};
+use macros::register;
 
 #[register(BotCommand)]
 #[poise::command(slash_command)]

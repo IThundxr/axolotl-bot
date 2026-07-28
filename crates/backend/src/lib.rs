@@ -3,39 +3,24 @@ mod error;
 mod routes;
 mod users;
 
-use std::env;
-use std::net::SocketAddr;
-use axum::http::StatusCode;
+use crate::app::App;
 use axum::Router;
+use axum::http::StatusCode;
 use axum::routing::get;
 use axum_login::AuthManagerLayerBuilder;
+use axum_login::tower_sessions::{Expiry, SessionManagerLayer};
+use sea_orm::DatabaseConnection;
+use std::env;
+use std::net::SocketAddr;
+use tower_http::trace::TraceLayer;
 use tower_sessions::cookie::SameSite;
 use tower_sessions::cookie::time::Duration;
-use axum_login::tower_sessions::{Expiry, SessionManagerLayer};
-use tower_http::trace::TraceLayer;
 use tower_sessions_redis_store::{RedisStore, fred::prelude::*};
 use tracing::{debug, info};
-use tracing::level_filters::LevelFilter;
-use tracing_subscriber::EnvFilter;
-use migration::{Migrator, MigratorTrait};
-use crate::app::App;
+use crate::users::AuthSession;
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    // Load .env
-    dotenvy::dotenv()?;
-
-    // Setup tracing
-    let env_filter = EnvFilter::builder()
-        .with_default_directive(LevelFilter::INFO.into())
-        .from_env_lossy();
-    tracing_subscriber::fmt().with_env_filter(env_filter).init();
-
-    let app = App::new().await?;
-
-    debug!("Running migrations");
-    Migrator::up(&app.db, None).await?;
-    debug!("Finished running migrations");
+pub async fn run(db: DatabaseConnection) -> anyhow::Result<()> {
+    let app = App::new(db).await?;
 
     let redis_url = Config::from_url(&env::var("BACKEND_REDIS_URL")?)?;
     let redis_pool = Pool::new(redis_url, None, None, None, 6)?;
@@ -55,6 +40,17 @@ async fn main() -> anyhow::Result<()> {
 
     let router = Router::new()
         .route("/status", get(|| async { StatusCode::OK }))
+        .route(
+            // TODO - Temporary
+            "/self",
+            get(|auth_session: AuthSession| async {
+                if auth_session.user.is_none() {
+                    return "Not logged in".into();
+                }
+
+                format!("{:?}", auth_session.user.unwrap())
+            }),
+        )
         .merge(routes::router())
         .layer(TraceLayer::new_for_http())
         .layer(auth_layer)
@@ -71,7 +67,7 @@ async fn main() -> anyhow::Result<()> {
         listener,
         router.into_make_service_with_connect_info::<SocketAddr>(),
     )
-        .await?;
+    .await?;
 
     redis_conn.await??;
 

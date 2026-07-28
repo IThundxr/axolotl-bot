@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemFn};
+use syn::{ItemFn, parse_macro_input};
 
 #[proc_macro_attribute]
 pub fn register(attr: TokenStream, item: TokenStream) -> TokenStream {
@@ -15,5 +15,6 @@ pub fn register(attr: TokenStream, item: TokenStream) -> TokenStream {
         inventory::submit! {
             #path(#ident)
         }
-    }.into()
+    }
+    .into()
 }
