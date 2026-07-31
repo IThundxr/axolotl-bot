@@ -1,10 +1,9 @@
-use anyhow::Context;
 use crate::app::App;
 use crate::error::Error;
 use axum_login::{AuthUser, AuthnBackend, UserId};
-use oauth2::{AccessToken, AuthorizationCode, PkceCodeVerifier, RefreshToken, TokenResponse};
 use database_entity::prelude::Users;
 use database_entity::users;
+use oauth2::{AccessToken, AuthorizationCode, PkceCodeVerifier, RefreshToken, TokenResponse};
 use sea_orm::{ActiveModelTrait, EntityTrait, Set};
 use sea_orm::{ColumnTrait, QueryFilter};
 use serde::Deserialize;

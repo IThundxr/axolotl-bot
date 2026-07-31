@@ -1,9 +1,13 @@
 [package]
-name = "backend"
+name = "website-backend"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
 publish.workspace = true
+
+[lib]
+name = "backend"
+path = "src/lib.rs"
 
 [dependencies]
 anyhow.workspace = true
@@ -11,6 +15,7 @@ axum.workspace = true
 axum-extra.workspace = true
 axum-login.workspace = true
 constant_time_eq.workspace = true
+database.workspace = true
 database-entity.workspace = true
 dotenvy.workspace = true
 headers.workspace = true

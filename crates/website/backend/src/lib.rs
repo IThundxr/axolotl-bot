@@ -5,13 +5,15 @@ mod users;
 
 use crate::app::App;
 use axum::Router;
-use axum::http::StatusCode;
+use axum::http::{HeaderValue, StatusCode};
 use axum::routing::get;
 use axum_login::AuthManagerLayerBuilder;
 use axum_login::tower_sessions::{Expiry, SessionManagerLayer};
 use sea_orm::DatabaseConnection;
 use std::env;
 use std::net::SocketAddr;
+use tower_http::cors::CorsLayer;
+use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
 use tower_sessions::cookie::SameSite;
 use tower_sessions::cookie::time::Duration;
@@ -36,6 +38,10 @@ pub async fn run(db: DatabaseConnection) -> anyhow::Result<()> {
         .with_same_site(SameSite::Lax)
         .with_expiry(Expiry::OnInactivity(Duration::hours(1)));
 
+    let cors_layer = CorsLayer::new()
+        .allow_origin("http://127.0.0.1:8080".parse::<HeaderValue>()?)
+        .allow_credentials(true);
+
     let auth_layer = AuthManagerLayerBuilder::new(app.clone(), session_layer).build();
 
     let router = Router::new()
@@ -52,7 +58,9 @@ pub async fn run(db: DatabaseConnection) -> anyhow::Result<()> {
             }),
         )
         .merge(routes::router())
+        .fallback_service(ServeDir::new("crates/website/frontend/dist"))
         .layer(TraceLayer::new_for_http())
+        .layer(cors_layer)
         .layer(auth_layer)
         .with_state(app);
 

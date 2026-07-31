@@ -21,3 +21,5 @@ Cargo.lock
 
 postgres/
 redis/
+dist/
+node_modules/

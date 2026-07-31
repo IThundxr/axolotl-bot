@@ -1,16 +1,16 @@
 use crate::app::App;
 use crate::error::Error;
+use crate::error::Error::FailedToAuthenticate;
 use crate::users::{AuthSession, Credentials};
 use axum::Router;
 use axum::extract::{Query, State};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Redirect};
-use axum::routing::get;
+use axum::routing::{get, post};
 use constant_time_eq::constant_time_eq;
 use oauth2::{AuthorizationCode, CsrfToken, PkceCodeChallenge, PkceCodeVerifier, Scope, StandardRevocableToken};
 use serde::Deserialize;
 use tower_sessions_core::Session;
-use crate::error::Error::FailedToAuthenticate;
 
 pub const AUTH_CSRF_TOKEN: &str = "auth_csrf_token";
 pub const AUTH_PKCE_CODE_VERIFIER: &str = "auth_pkce_code_verifier";
@@ -19,7 +19,7 @@ pub fn router() -> Router<App> {
     Router::new()
         .route("/login", get(login))
         .route("/callback", get(callback))
-        .route("/logout", get(logout))
+        .route("/logout", post(logout))
 }
 
 #[derive(Deserialize, Debug)]
@@ -103,9 +103,8 @@ async fn logout(
         .await
         .map_err(|_| Error::FailedToLogOut)?;
 
-    // TODO: finish this
     match auth_session.logout().await {
-        Ok(_) => Ok(Redirect::to("/").into_response()),
+        Ok(_) => Ok(StatusCode::OK),
         Err(_) => Err(Error::FailedToLogOut),
     }
 }
