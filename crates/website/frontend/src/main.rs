@@ -1,7 +1,7 @@
 mod app;
 mod components;
 mod pages;
-mod bindings;
+mod codemirror;
 
 use crate::app::App;
 

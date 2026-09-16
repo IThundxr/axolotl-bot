@@ -15,3 +15,5 @@ serde.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 tracing-subscriber-wasm.workspace = true
+wasm-bindgen.workspace = true
+web-sys.workspace = true

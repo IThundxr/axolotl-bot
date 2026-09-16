@@ -2,6 +2,7 @@ use gloo_net::http::Request;
 use leptos::prelude::*;
 use leptos::web_sys;
 use leptos_router::hooks::use_navigate;
+use crate::components::editor::CodeMirror;
 use crate::components::navbar::Navbar;
 
 #[component]
