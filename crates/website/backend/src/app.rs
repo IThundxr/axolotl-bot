@@ -11,6 +11,7 @@ use reqwest::Client;
 use reqwest::redirect::Policy;
 use sea_orm::DatabaseConnection;
 use std::env;
+use oauth2_reqwest::ReqwestClient;
 
 pub type OAuthClient = oauth2::Client<
     BasicErrorResponse,
@@ -30,7 +31,7 @@ pub struct App {
     /// Normal Reqwest HTTP Client
     pub http: Client,
     /// Reqwest HTTP Client with no Redirect policy set to None
-    pub oauth_http: Client,
+    pub oauth_http: ReqwestClient,
     /// SeaORM Database Connection
     pub db: DatabaseConnection,
     /// Discord OAuth Client
@@ -41,7 +42,7 @@ impl App {
     pub async fn new(db: DatabaseConnection) -> Result<Self, Error> {
         let app = Self {
             http: Client::new(),
-            oauth_http: Client::builder().redirect(Policy::none()).build().unwrap(),
+            oauth_http: ReqwestClient::from(Client::builder().redirect(Policy::none()).build()?),
             db,
             discord_oauth: {
                 let client_id = env::var("BACKEND_DISCORD_CLIENT_ID")?;

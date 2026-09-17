@@ -24,7 +24,7 @@ axum-extra = { version = "0.12.6", features = ["typed-header"] }
 axum-login = "0.18.0"
 bot = { path = "crates/bot" }
 console_error_panic_hook = "0.1.7"
-constant_time_eq = "0.5.0"
+constant_time_eq = "0.6.0"
 database = { path = "crates/database" }
 database-entity = { path = "crates/database/entity" }
 database-migration = { path = "crates/database/migration" }
@@ -35,27 +35,28 @@ humantime = "2.4.0"
 inventory = "0.3.24"
 knus = { git = "https://github.com/TheLostLambda/knus.git", branch = "kdl2" }
 leptos = { version = "0.8.20", features = ["csr"] }
-leptos_meta = { version = "0.8.2" }
-leptos_router = { version = "0.8.2" }
+leptos_meta = { version = "0.8.6" }
+leptos_router = { version = "0.8.15" }
 macros = { path = "crates/macros" }
 miette = { version = "7.6.0", features = ["fancy"] }
-oauth2 = "5.0.0"
+oauth2 = { version = "5.0.0", default-features = false }
+oauth2-reqwest = "0.1.0-alpha.3"
 poise = "0.6.2"
-reqwest = { version = "0.13.4", features = ["json"] }
-sea-orm = { version = "2.0.0", features = ["sqlx-postgres", "runtime-tokio-native-tls", "macros"] }
-sea-orm-migration = { version = "2.0.0", features = ["runtime-tokio-rustls", "sqlx-postgres"] }
+reqwest = { version = "0.13.5", features = ["json"] }
+sea-orm = { version = "2.0.3", features = ["sqlx-postgres", "runtime-tokio-native-tls", "macros"] }
+sea-orm-migration = { version = "2.0.3", features = ["runtime-tokio-rustls", "sqlx-postgres"] }
 serde = { version = "1.0.229", features = ["derive"] }
-thiserror = "2.0.19"
+thiserror = "2.0.20"
 tokio = { version = "1.53.1", features = ["macros", "rt", "rt-multi-thread"] }
 tower = "0.5.3"
-tower-http = { version = "0.7.0", features = ["cors", "fs", "trace"] }
+tower-http = { version = "0.7.1", features = ["cors", "fs", "trace"] }
 tower-sessions = "0.15.0"
 tower-sessions-core = "0.15.0"
 tower-sessions-redis-store = "0.16.0"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 tracing-subscriber-wasm = "0.1.0"
-uuid = { version = "1.24.0", features = ["v4", "serde"] }
+uuid = { version = "1.26.1", features = ["v4", "serde"] }
 website-backend = { path = "crates/website/backend" }
-wasm-bindgen = "0.2.126"
-web-sys = "0.3.103"
+wasm-bindgen = "0.2.128"
+web-sys = "0.3.105"

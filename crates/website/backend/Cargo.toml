@@ -20,6 +20,7 @@ database-entity.workspace = true
 dotenvy.workspace = true
 headers.workspace = true
 oauth2.workspace = true
+oauth2-reqwest.workspace = true
 reqwest.workspace = true
 sea-orm.workspace = true
 serde.workspace = true
