@@ -12,10 +12,12 @@ mod app;
 mod commands;
 mod config;
 mod error;
+mod guild_access;
 mod types;
 
 pub async fn run(db: DatabaseConnection) -> anyhow::Result<()> {
-    let app = App::new(db);
+    let app = App::new(db).await?;
+    guild_access::add_default_allowed_guilds(&app).await?;
 
     // Setup serenity/poise
     let framework = poise::Framework::builder()
@@ -25,6 +27,7 @@ pub async fn run(db: DatabaseConnection) -> anyhow::Result<()> {
                 dynamic_prefix: Some(|ctx| {
                     Box::pin(async move {
                         Ok(match ctx.guild_id {
+                            Some(id) if !ctx.data.is_allowed(id) => None,
                             Some(id) => {
                                 let span = debug_span!("dynamic_prefix", guild_id = id.to_string());
                                 let _enter = span.enter();
@@ -40,6 +43,15 @@ pub async fn run(db: DatabaseConnection) -> anyhow::Result<()> {
                 ..Default::default()
             },
             on_error: |ctx| Box::pin(on_error(ctx)),
+            // Ignore commands from servers that aren't allowed, the bot will be leaving them anyway
+            command_check: Some(|ctx| {
+                Box::pin(async move {
+                    Ok(ctx.guild_id().is_none_or(|id| ctx.data().is_allowed(id)))
+                })
+            }),
+            event_handler: |ctx, event, _framework, app| {
+                Box::pin(guild_access::event_handler(ctx, event, app))
+            },
             pre_command: |ctx| {
                 Box::pin(async move {
                     debug!("Executing command {}...", ctx.command().qualified_name);

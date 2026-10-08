@@ -33,6 +33,10 @@ pub enum Error {
     FailedToFindSession,
     #[error("Failed to log out")]
     FailedToLogOut,
+    #[error("Not logged in")]
+    NotLoggedIn,
+    #[error("Guild not found")]
+    GuildNotFound,
 }
 
 #[derive(Serialize)]
@@ -59,6 +63,16 @@ impl Error {
                 "ERR_LOGOUT",
                 "Failed to log out",
                 StatusCode::INTERNAL_SERVER_ERROR,
+            ),
+            Error::NotLoggedIn => (
+                "ERR_NOT_LOGGED_IN",
+                "You must be logged in",
+                StatusCode::UNAUTHORIZED,
+            ),
+            Error::GuildNotFound => (
+                "ERR_GUILD_NOT_FOUND",
+                "Guild not found",
+                StatusCode::NOT_FOUND,
             ),
             _ => (
                 "UNKNOWN_ERR",

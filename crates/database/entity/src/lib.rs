@@ -2,4 +2,5 @@
 
 pub mod prelude;
 
+pub mod allowed_guilds;
 pub mod users;

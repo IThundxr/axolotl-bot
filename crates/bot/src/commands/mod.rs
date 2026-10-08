@@ -1,3 +1,4 @@
+mod bot_control;
 mod help;
 mod moderation;
 pub mod utility;
